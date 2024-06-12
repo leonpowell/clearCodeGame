@@ -5,7 +5,7 @@ pygame.init()
 
 # settings
 width = 800
-height = 600
+height = 400
 FPS = 60
 
 
@@ -13,8 +13,8 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Runner")
 clock = pygame.time.Clock()
 
-test_surface = pygame.Surface((100,100))
-test_surface.fill('Purple')
+sky_surface = pygame.image.load('graphics/Sky.png')
+ground_surface = pygame.image.load('graphics/ground.png')
 while True:
 
     for event in pygame.event.get():
@@ -23,7 +23,7 @@ while True:
             exit()
     # draw all out elements and update everything
 
-    screen.blit(test_surface,(0,0))
-
+    screen.blit(sky_surface,(0,0))
+    screen.blit(ground_surface, (0, 300))
     pygame.display.update()
     clock.tick(FPS)
