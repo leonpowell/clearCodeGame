@@ -14,7 +14,12 @@ def obstacle_movement(obstacle_list):
         for obstacle_rect in obstacle_list:
             obstacle_rect.x -= 5
 
-            screen.blit(snail_surf, obstacle_rect)
+            if obstacle_rect.top == 270:
+                screen.blit(snail_surf, obstacle_rect)
+            else:
+                screen.blit(fly_surf, obstacle_rect)
+
+        obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100]
 
         return obstacle_list
     else:
@@ -41,7 +46,9 @@ ground_surface = pygame.image.load('graphics/ground.png').convert()
 
 snail_x_pos = 600
 snail_surf = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
-snail_rect = snail_surf.get_rect(topleft=(snail_x_pos, 270))
+fly_surf = pygame.image.load('graphics/Fly/Fly1.png').convert_alpha()
+
+
 
 obstacle_rect_list = []
 
@@ -83,13 +90,14 @@ while True:
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
-                snail_rect.left = 800
                 start_time = int(pygame.time.get_ticks() / 1000)
+
         if game_active:
             if event.type == obstacle_timer:
-                obstacle_rect_list.append(snail_surf.get_rect(topleft=(randint(900,1100), 270)))
-
-
+                if randint(0,2):
+                    obstacle_rect_list.append(snail_surf.get_rect(topleft=(randint(900,1100), 270)))
+                else:
+                    obstacle_rect_list.append(fly_surf.get_rect(topleft=(randint(900, 1100), 100)))
     if game_active:
         # draw all out elements and update everything
         screen.blit(sky_surface, (0, 0))
@@ -114,8 +122,7 @@ while True:
         # obstacle movement
         obstacle_rect_list = obstacle_movement(obstacle_rect_list)
 
-        if snail_rect.colliderect(player_rect):
-            game_active = False
+
     else:
         screen.fill((94,129,162))
         screen.blit(player_stand, player_stand_rect)
