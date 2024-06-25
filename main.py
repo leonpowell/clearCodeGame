@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 from random import randint
 
+
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
     score_surf = test_font.render(f'Score: {current_time}', False, (64, 64, 64))
@@ -32,6 +33,20 @@ def collisions(player, obstacles):
             if player.colliderect(obstacle_rect):
                 return False
     return True
+
+def player_animation():
+    global player_index, player_surf
+
+    if player_rect.bottom < 300:
+        player_surf = player_jump
+    else:
+        player_index += 0.1
+        if player_index >= len(player_walk):
+            player_index = 0
+        player_surf = player_walk[int(player_index)]
+
+
+
 pygame.init()
 
 # settings
@@ -55,12 +70,17 @@ snail_surf = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
 fly_surf = pygame.image.load('graphics/Fly/Fly1.png').convert_alpha()
 
 
-
 obstacle_rect_list = []
 
-player_surf = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
-player_rect = player_surf.get_rect(topleft=(80, 230))
+player_walk_1 = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
+player_walk_2 = pygame.image.load('graphics/player/player_walk_2.png').convert_alpha()
+player_walk = [player_walk_1, player_walk_2]
+player_index = 0
+player_jump = pygame.image.load('graphics/player/jump.png').convert_alpha()
 
+player_surf = player_walk[player_index]
+
+player_rect = player_surf.get_rect(topleft=(80, 230))
 player_gravity = 0
 # image for opening screen
 player_stand = pygame.image.load('graphics/player/player_stand.png').convert_alpha()
@@ -73,7 +93,7 @@ game_name_rect = game_name.get_rect(center=(400,50))
 start_game = test_font.render('Press Space bar to start', False, (111, 196, 169))
 start_game_rect = start_game.get_rect(center=(400,350))
 
-# obstacle
+# obstacle timer
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1300)
 
@@ -123,6 +143,7 @@ while True:
         player_rect.y += player_gravity
         if player_rect.bottom >= 300:
             player_rect.bottom = 300
+        player_animation()
         screen.blit(player_surf, player_rect)
 
         # obstacle movement
@@ -134,7 +155,7 @@ while True:
         screen.fill((94,129,162))
         screen.blit(player_stand, player_stand_rect)
         obstacle_rect_list.clear()
-
+        player_rect.midbottom=(80,300)
         screen.blit(game_name, game_name_rect)
         screen.blit(start_game, start_game_rect)
     pygame.display.update()
